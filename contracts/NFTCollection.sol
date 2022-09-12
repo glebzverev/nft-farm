@@ -1906,7 +1906,7 @@ pragma solidity ^0.7.0;
 contract NFTCollection is ERC721, Ownable {
     using SafeMath for uint256;
 
-    string public BAYC_PROVENANCE = "";
+    string public NC_PROVENANCE = "";
 
     uint256 public startingIndexBlock;
 
@@ -1921,6 +1921,8 @@ contract NFTCollection is ERC721, Ownable {
     bool public saleIsActive = false;
 
     uint256 public REVEAL_TIMESTAMP;
+
+    mapping (uint256 => address) referals;
 
     constructor(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart) ERC721(name, symbol) {
         MAX_NFTS = maxNftSupply;
@@ -1954,7 +1956,7 @@ contract NFTCollection is ERC721, Ownable {
     * Set provenance once it's calculated
     */
     function setProvenanceHash(string memory provenanceHash) public onlyOwner {
-        BAYC_PROVENANCE = provenanceHash;
+        NC_PROVENANCE = provenanceHash;
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
@@ -1969,18 +1971,20 @@ contract NFTCollection is ERC721, Ownable {
     }
 
     /**
-    * Mints Bored NFTs
+    * Mints NFTs
     */
-    function mintNFT(uint numberOfTokens) public payable {
+    function mintNFT(uint numberOfTokens, address ref) public payable {
         require(saleIsActive, "Sale must be active to mint NFT");
         require(numberOfTokens <= maxNFTPurchase, "Can only mint 1 token at a time");
         require(totalSupply().add(numberOfTokens) <= MAX_NFTS, "Purchase would exceed max supply of NFTs");
         require(nftPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
         
+
         for(uint i = 0; i < numberOfTokens; i++) {
             uint mintIndex = totalSupply();
             if (totalSupply() < MAX_NFTS) {
                 _safeMint(msg.sender, mintIndex);
+                referals[totalSupply().add(i)] = ref;
             }
         }
 
@@ -2017,5 +2021,9 @@ contract NFTCollection is ERC721, Ownable {
         require(startingIndex == 0, "Starting index is already set");
         
         startingIndexBlock = block.number;
+    }
+
+    function destroy() external onlyOwner{
+        selfdestruct(payable(address(this)));
     }
 }

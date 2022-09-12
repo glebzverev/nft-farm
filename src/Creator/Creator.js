@@ -7,7 +7,7 @@ import { useState } from "react";
 import './Creator.css';
 
 import FactoryABI from './../abi/FactoryABI.json'
-const FactoryAddress = "0xD9675830c581B92bB7ED14fF6662016993E125Ad";
+const FactoryAddress = "0x605575b994a1617fBa104EC562948280D76A8113";
 
 var Creator = ({accounts}) => {
     const isConnected = Boolean(accounts[0]);
@@ -20,7 +20,7 @@ var Creator = ({accounts}) => {
         if (window.ethereum) {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
-            console.log(accounts[0]);
+            console.log(signer);
             const contract = new ethers.Contract(
             FactoryAddress,
             FactoryABI,
@@ -71,14 +71,33 @@ var Creator = ({accounts}) => {
 
     function renderShortName(){
         const elem = document.getElementById('shortName');
-        setMaxSupply(elem.value)
+        setShortName(elem.value)
         console.log(elem.value);
     }
 
     function renderBaseURI(){
-        const elem = document.getElementById('shortName');
+        const elem = document.getElementById('baseURI');
         set_BaseURI(elem.value)
         console.log(elem.value);
+    }
+
+    async function destroyCollection(){
+        if (window.ethereum) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            console.log(signer);
+            const contract = new ethers.Contract(
+            FactoryAddress,
+            FactoryABI,
+            signer
+            );
+            try {
+                let response = await contract.destroyCollection(name);
+                console.log(response);
+            } catch (err) {
+                console.log("error: ", err);
+            }
+        }    
     }
 
     return(
@@ -99,12 +118,20 @@ var Creator = ({accounts}) => {
                 <Input placeholder='Collection name' id="name" text="Collection name" type="string"
                  size="xs" width='auto' onChange={renderName} />
                 <Input width='auto' placeholder='base URI' id="baseURI" text="maxSupply" type="string"
-                onChange={renderMaxSupply}/>
-                <Button onClick={renderBaseURI}>
+                onChange={renderBaseURI}/>
+                <Button onClick={setBaseURI}>
                     Set base URI
                 </Button>
             </Stack>
-            
+            <p>Dangerous zone!!!</p>
+            <Stack spacing={2} align='stretch'>
+                <Input placeholder='Collection name' id="name" text="Collection name" type="string"
+                 size="xs" width='auto' onChange={renderName} />
+                <Button onClick={destroyCollection}>
+                    DESTROY COLLECTION
+                </Button>
+            </Stack>
+
             </div>
         </div>
     )
