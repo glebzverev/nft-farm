@@ -1892,7 +1892,7 @@ abstract contract Ownable is Context {
     }
 }
 
-// File: contracts/BoredApeYachtClub.sol
+// File: contracts/NFTCollection.sol
 
 
 pragma solidity ^0.7.0;
@@ -1900,10 +1900,10 @@ pragma solidity ^0.7.0;
 
 
 /**
- * @title BoredApeYachtClub contract
+ * @title NFTCollection contract
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
  */
-contract BreadBossYachtClub is ERC721, Ownable {
+contract NFTCollection is ERC721, Ownable {
     using SafeMath for uint256;
 
     string public BAYC_PROVENANCE = "";
@@ -1912,18 +1912,18 @@ contract BreadBossYachtClub is ERC721, Ownable {
 
     uint256 public startingIndex;
 
-    uint256 public constant apePrice = 80000000000000000; //0.08 ETH
+    uint256 public constant nftPrice = 0; //0 ETH
 
-    uint public constant maxApePurchase = 20;
+    uint public constant maxNFTPurchase = 1;
 
-    uint256 public MAX_APES;
+    uint256 public MAX_NFTS;
 
     bool public saleIsActive = false;
 
     uint256 public REVEAL_TIMESTAMP;
 
     constructor(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart) ERC721(name, symbol) {
-        MAX_APES = maxNftSupply;
+        MAX_NFTS = maxNftSupply;
         REVEAL_TIMESTAMP = saleStart + (86400 * 9);
     }
 
@@ -1933,9 +1933,9 @@ contract BreadBossYachtClub is ERC721, Ownable {
     }
 
     /**
-     * Set some Bored Apes aside
+     * Set some NFTs aside
      */
-    function reserveApes() public onlyOwner {        
+    function reserveNFTs() public onlyOwner {        
         uint supply = totalSupply();
         uint i;
         for (i = 0; i < 30; i++) {
@@ -1969,24 +1969,24 @@ contract BreadBossYachtClub is ERC721, Ownable {
     }
 
     /**
-    * Mints Bored Apes
+    * Mints Bored NFTs
     */
-    function mintApe(uint numberOfTokens) public payable {
-        require(saleIsActive, "Sale must be active to mint Ape");
-        require(numberOfTokens <= maxApePurchase, "Can only mint 20 tokens at a time");
-        require(totalSupply().add(numberOfTokens) <= MAX_APES, "Purchase would exceed max supply of Apes");
-        require(apePrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
+    function mintNFT(uint numberOfTokens) public payable {
+        require(saleIsActive, "Sale must be active to mint NFT");
+        require(numberOfTokens <= maxNFTPurchase, "Can only mint 1 token at a time");
+        require(totalSupply().add(numberOfTokens) <= MAX_NFTS, "Purchase would exceed max supply of NFTs");
+        require(nftPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
         
         for(uint i = 0; i < numberOfTokens; i++) {
             uint mintIndex = totalSupply();
-            if (totalSupply() < MAX_APES) {
+            if (totalSupply() < MAX_NFTS) {
                 _safeMint(msg.sender, mintIndex);
             }
         }
 
         // If we haven't set the starting index and this is either 1) the last saleable token or 2) the first token to be sold after
         // the end of pre-sale, set the starting index block
-        if (startingIndexBlock == 0 && (totalSupply() == MAX_APES || block.timestamp >= REVEAL_TIMESTAMP)) {
+        if (startingIndexBlock == 0 && (totalSupply() == MAX_NFTS || block.timestamp >= REVEAL_TIMESTAMP)) {
             startingIndexBlock = block.number;
         } 
     }
@@ -1998,10 +1998,10 @@ contract BreadBossYachtClub is ERC721, Ownable {
         require(startingIndex == 0, "Starting index is already set");
         require(startingIndexBlock != 0, "Starting index block must be set");
         
-        startingIndex = uint(blockhash(startingIndexBlock)) % MAX_APES;
+        startingIndex = uint(blockhash(startingIndexBlock)) % MAX_NFTS;
         // Just a sanity case in the worst case if this function is called late (EVM only stores last 256 block hashes)
         if (block.number.sub(startingIndexBlock) > 255) {
-            startingIndex = uint(blockhash(block.number - 1)) % MAX_APES;
+            startingIndex = uint(blockhash(block.number - 1)) % MAX_NFTS;
         }
         // Prevent default sequence
         if (startingIndex == 0) {
