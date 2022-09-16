@@ -38,6 +38,9 @@
   },
   "devDependencies": {
     "@chakra-ui/react": "^2.3.2",
-    "ethers": "^5.7.0"
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "ethers": "^5.7.0",
+    "framer-motion": "^7.3.5"
   }
 }
