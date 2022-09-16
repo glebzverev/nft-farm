@@ -47,18 +47,16 @@ var Connecter = ({accounts, setAccounts}) => {
     return(
         <div className = "Connecter">
             {isConnected ? (
-                <div>
-                <p>
-                    {"0x" + accounts[0][2]+accounts[0][3]+"..."} is Connected
-                </p>
                 <Button onClick={updateData}>
-                    UpdateData
+                {"0x" + accounts[0][2]+accounts[0][3]+"..."} is Connected
                 </Button>
-                </div>
             ):(
+                <div>
                 <Button onClick={updateData}>
                     Connect
                 </Button>    
+                </div>
+
             )}
         </div>
     )
