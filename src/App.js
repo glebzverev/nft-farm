@@ -8,6 +8,10 @@ function App() {
 
   return (
     <div className="App">
+           <img 
+      src="https://raw.githubusercontent.com/glebzverev/nft-farm/main/base_collections/zombiepunks/zombiepunk0.png"
+      // alt="new"
+      />
         <Connecter
           accounts={accounts}
           setAccounts={setAccounts}
