@@ -1,9 +1,7 @@
 import React from 'react';
-import { useState } from "react";
 
 import { Box, Button, Flex, Image, Link, SliderProvider, Spacer, Text } from '@chakra-ui/react';
 
-import { ethers, BigNumber } from "ethers";
 // import Token from "../../abi/Token.json";
 
 import './Connecter.css';
@@ -20,7 +18,6 @@ var Connecter = ({accounts, setAccounts}) => {
             });
         setAccounts(accounts);
         }
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
         const chainId = window.ethereum.networkVersion;
         console.log(chainId);
         if(chainId == binanceTestChainId[1]){

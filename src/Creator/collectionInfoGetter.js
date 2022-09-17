@@ -1,9 +1,10 @@
 import FactoryABI from '../abi/FactoryABI.json'
 import NFTCollectionABI from '../abi/NFTCollectionABI.json'
+import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
 const FactoryAddress = "0x605575b994a1617fBa104EC562948280D76A8113";
-
+const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
 export async function collectionExist(name){
     if (window.ethereum) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -64,6 +65,54 @@ export async function getImg(collectionAddr){
                 currAddr = await contract.ownerOf(index);
             }
             return index;
+        } catch (err) {
+            console.log("error: ", err);
+        }
+    }  
+}
+
+export async function getCollectionOwners(collectionAddr){
+    if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+        collectionAddr,
+        NFTCollectionABI,
+        signer
+        );  
+        try {
+            var index = 0;
+            var list = {};
+            let totalSupply = await contract.totalSupply();
+            while (index < totalSupply){
+                let owner = await contract.ownerOf(index);
+                if (owner in list)
+                    list[owner]++;
+                else
+                    list[owner] = 1;
+                index+=1;
+            }
+            return [list, index];
+        } catch (err) {
+            console.log("error: ", err);
+        }
+    }  
+}
+
+export async function SplitRevenue(token, brooks, amount){
+    if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+        ValveAddress,
+        ValveABI,
+        signer
+        );  
+        console.log(token, brooks, amount);
+
+        try {
+            let response = contract.distribute(token, brooks, amount)
+            return response;
         } catch (err) {
             console.log("error: ", err);
         }
