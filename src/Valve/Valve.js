@@ -16,7 +16,10 @@ async function Split(){
         let data = await getCollectionOwners(collectionAddress);
         var list = []
         for (var i in data[0]){
-            list.push([ethers.utils.parseEther((data[0][i]/data[1]*amount).toString()), i]);
+            list.push([ethers.utils.parseEther((data[0][i]/data[2]*amount*0.96).toString()), i]);
+        }
+        for (var j in data[1]){
+            list.push([ethers.utils.parseEther((data[1][j]/data[2]*amount*0.04).toString()), j]);
         }
         console.log(list);
         SplitRevenue(token, list, ethers.utils.parseEther(amount.toString()));

@@ -10,7 +10,7 @@ import './Creator.css';
 import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
 
-const FactoryAddress = "0x605575b994a1617fBa104EC562948280D76A8113";
+const FactoryAddress = "0x4541c8168fe04134184452692da0F5Dc6c238D2B";
 
 var Creator = ({accounts}) => {
     const isConnected = Boolean(accounts[0]);

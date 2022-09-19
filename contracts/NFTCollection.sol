@@ -1898,7 +1898,6 @@ abstract contract Ownable is Context {
 pragma solidity ^0.7.0;
 
 
-
 /**
  * @title NFTCollection contract
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
@@ -1922,7 +1921,7 @@ contract NFTCollection is ERC721, Ownable {
 
     uint256 public REVEAL_TIMESTAMP;
 
-    mapping (uint256 => address) referals;
+    mapping (uint256 => address) public referals;
 
     constructor(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart) ERC721(name, symbol) {
         MAX_NFTS = maxNftSupply;
@@ -1983,8 +1982,8 @@ contract NFTCollection is ERC721, Ownable {
         for(uint i = 0; i < numberOfTokens; i++) {
             uint mintIndex = totalSupply();
             if (totalSupply() < MAX_NFTS) {
+                referals[totalSupply()] = ref;
                 _safeMint(msg.sender, mintIndex);
-                referals[totalSupply().add(i)] = ref;
             }
         }
 

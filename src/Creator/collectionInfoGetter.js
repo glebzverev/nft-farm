@@ -3,7 +3,7 @@ import NFTCollectionABI from '../abi/NFTCollectionABI.json'
 import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
-const FactoryAddress = "0x605575b994a1617fBa104EC562948280D76A8113";
+const FactoryAddress = "0x4541c8168fe04134184452692da0F5Dc6c238D2B";
 const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
 export async function collectionExist(name){
     if (window.ethereum) {
@@ -82,17 +82,23 @@ export async function getCollectionOwners(collectionAddr){
         );  
         try {
             var index = 0;
-            var list = {};
+            var owners = {};
+            var referals = {};
             let totalSupply = await contract.totalSupply();
             while (index < totalSupply){
                 let owner = await contract.ownerOf(index);
-                if (owner in list)
-                    list[owner]++;
+                let ref = await contract.referals[index];
+                if (owner in owners)
+                    owners[owner]++;
                 else
-                    list[owner] = 1;
+                    owners[owner] = 1;
+                if (ref in referals)
+                    referals[owner]++;
+                else
+                    referals[owner] = 1;
                 index+=1;
             }
-            return [list, index];
+            return [owners, referals, index];
         } catch (err) {
             console.log("error: ", err);
         }
