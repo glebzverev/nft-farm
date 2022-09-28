@@ -71,7 +71,7 @@ export async function getImg(collectionAddr){
     }  
 }
 
-export async function getCollectionOwners(collectionAddr){
+export async function getCollectionOwners(collectionAddr, indexes){
     if (window.ethereum) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
@@ -81,24 +81,24 @@ export async function getCollectionOwners(collectionAddr){
         signer
         );  
         try {
-            var index = 0;
-            var owners = {};
-            var referals = {};
-            let totalSupply = await contract.totalSupply();
-            while (index < totalSupply){
-                let owner = await contract.ownerOf(index);
-                let ref = await contract.referals[index];
-                if (owner in owners)
-                    owners[owner]++;
+            var totalPercentPerAddress = {};
+            var ownerPercent = 0.96;
+            var refPercent = 0.04;
+            
+            for (i of indexes) {
+                let owner = await contract.ownerOf(i);
+                let ref = await contract.referals[i];
+                if (owner in totalPercentPerAddress)
+                    totalPercentPerAddress[owner] += ownerPercent;
                 else
-                    owners[owner] = 1;
-                if (ref in referals)
-                    referals[owner]++;
+                    totalPercentPerAddress[owner] = ownerPercent;
+                if (ref in totalPercentPerAddress)
+                    totalPercentPerAddress[ref]++;
                 else
-                    referals[owner] = 1;
-                index+=1;
+                    totalPercentPerAddress[ref] += refPercent;
             }
-            return [owners, referals, index];
+
+            return [totalPercentPerAddress, indexes.length];
         } catch (err) {
             console.log("error: ", err);
         }

@@ -8,18 +8,26 @@ async function Split(){
     const collectionName = document.getElementById('name').value;
     const token = document.getElementById('token').value;
     let collectionAddress = await collectionExist(collectionName);
+    let ownerPercent = 0.96;
+    let refPercent = 0.04;
+    let totalPercentPerAddress = {};
     console.log(collectionAddress, collectionName);
     if (collectionAddress == "0x0000000000000000000000000000000000000000"){
         alert("Collection doesn't exist!");
     }
     else {
-        let data = await getCollectionOwners(collectionAddress);
+        let data = await getCollectionOwners(collectionAddress, indexes);
         var list = []
+        // for (var i in data[0]){
+        //     list.push([ethers.utils.parseEther((data[0][i]/data[2]*amount*0.96).toString()), i]);
+        // }
+        // for (var j in data[1]){
+        //     list.push([ethers.utils.parseEther((data[1][j]/data[2]*amount*0.04).toString()), j]);
+        // }
+        // console.log(list);
+        // SplitRevenue(token, list, ethers.utils.parseEther(amount.toString()));
         for (var i in data[0]){
-            list.push([ethers.utils.parseEther((data[0][i]/data[2]*amount*0.96).toString()), i]);
-        }
-        for (var j in data[1]){
-            list.push([ethers.utils.parseEther((data[1][j]/data[2]*amount*0.04).toString()), j]);
+            list.push([ethers.utils.parseEther((data[0][i] * amount / data[1]).toString()), i]);
         }
         console.log(list);
         SplitRevenue(token, list, ethers.utils.parseEther(amount.toString()));
