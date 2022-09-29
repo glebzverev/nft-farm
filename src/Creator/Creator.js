@@ -135,6 +135,8 @@ var Creator = ({accounts}) => {
             FactoryABI,
             signer
             );
+            const amount = document.getElementById('amount').value;
+            const refAddress = document.getElementById('refAddress').value;
             try {
                 let response = await contract1.getCollection(name1);
                 console.log(response);
@@ -144,7 +146,7 @@ var Creator = ({accounts}) => {
                     signer
                     );
                 try {
-                    let response = await contract2.mintNFT(1, "0x687FA78988BCfDBB8C3FECB9cE66672F7651EDe1");
+                    let response = await contract2.mintNFT(amount, refAddress);
                     console.log(response);
                 } catch (err) {
                     console.log("error: ", err);
@@ -183,6 +185,8 @@ var Creator = ({accounts}) => {
             </Stack>
             <p>MINT!</p>
             <Stack spacing={2} align='stretch'>
+                <Input width='auto' placeholder='Amount to mint' id="amount" text="Amount to mint" type="number"/>
+                <Input width='auto' placeholder='Referal address' id="refAddress" text="refAddress" type="address"/>
                 <Button onClick={mintNFT}>
                     MINT NFT
                 </Button>
