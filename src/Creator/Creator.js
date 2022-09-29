@@ -1,16 +1,16 @@
 import React from 'react';
-import { Box, Button, Flex, Stack, Image, Link, SliderProvider, Spacer, Text, Input } from '@chakra-ui/react';
+import { Button, Stack, Input } from '@chakra-ui/react';
 import { useState } from "react";
 import { ethers, BigNumber } from "ethers";
 
-import {collectionExist, collectionInfo, getImg} from "./collectionInfoGetter";
+import {collectionExist, collectionInfo, getImg} from "../Utils/InfoGette";
 
 import './Creator.css';
 
 import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
 
-const FactoryAddress = "0x4541c8168fe04134184452692da0F5Dc6c238D2B";
+const FactoryAddress = "0x219569e857A2728aDede8E4154a977A9B800e8bF";
 
 var Creator = ({accounts}) => {
     const isConnected = Boolean(accounts[0]);
@@ -69,7 +69,6 @@ var Creator = ({accounts}) => {
         let collectionAddr = await collectionExist(elem.value);
         if (collectionAddr != "0x0000000000000000000000000000000000000000"){
             let data = await collectionInfo(collectionAddr);
-            // console.log(data[0], data[1],data[2]);
             setInfo(
                 <div>
                 <p>Exist</p>
@@ -145,7 +144,7 @@ var Creator = ({accounts}) => {
                     signer
                     );
                 try {
-                    let response = await contract2.mintNFT(1, "0x3604226674A32B125444189D21A51377ab0173d1");
+                    let response = await contract2.mintNFT(1, "0x687FA78988BCfDBB8C3FECB9cE66672F7651EDe1");
                     console.log(response);
                 } catch (err) {
                     console.log("error: ", err);
