@@ -1974,7 +1974,7 @@ contract NFTCollection is ERC721, Ownable {
     */
     function mintNFT(uint numberOfTokens, address ref) public payable {
         require(saleIsActive, "Sale must be active to mint NFT");
-        require(numberOfTokens <= maxNFTPurchase, "Can only mint 1 token at a time");
+        // require(numberOfTokens <= maxNFTPurchase, "Can only mint 1 token at a time");
         require(totalSupply().add(numberOfTokens) <= MAX_NFTS, "Purchase would exceed max supply of NFTs");
         require(nftPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
         
@@ -2024,5 +2024,11 @@ contract NFTCollection is ERC721, Ownable {
 
     function destroy() external onlyOwner{
         selfdestruct(payable(address(this)));
+    }
+
+    /** NEW FUNCTIONS */
+
+    function updateMaxSupply(uint256 newMaxSupply) public onlyOwner {
+        MAX_NFTS = newMaxSupply;
     }
 }
