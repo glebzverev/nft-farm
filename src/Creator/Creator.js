@@ -3,20 +3,22 @@ import { Button, Stack, Input } from '@chakra-ui/react';
 import { useState } from "react";
 import { ethers, BigNumber } from "ethers";
 
+
 import {collectionExist, collectionInfo, getImg} from "../Utils/InfoGette";
+import { createMetadata } from '../Utils/metadata-creator';
 
 import './Creator.css';
 
 import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
-
-const FactoryAddress = "0x219569e857A2728aDede8E4154a977A9B800e8bF";
+const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
 
 var Creator = ({accounts}) => {
     const isConnected = Boolean(accounts[0]);
     const [name1, setName1] = useState('Input Collection Name');
     const [shortName, setShortName] = useState('Input Short Name');
     const [maxSupply, setMaxSupply] = useState('Input Short Name');
+    const [properties, setProperties] = useState('Input Properties');
     const [Info, setInfo] = useState("");
     const [baseURI, set_BaseURI] = useState('Input base URI');
 
@@ -30,11 +32,12 @@ var Creator = ({accounts}) => {
             FactoryABI,
             signer
             );
-            console.log(name1, shortName);
+            let propertiesArr = properties.split(', ');
+            console.log(name1, shortName, propertiesArr);
             try {
                 let response = await contract.makeCollection(
                     name1, shortName,
-                    maxSupply, 0);
+                    maxSupply, 0, propertiesArr);
                 console.log(response);
             } catch (err) {
                 console.log("error: ", err);
@@ -100,6 +103,12 @@ var Creator = ({accounts}) => {
         console.log(elem.value);
     }
 
+    function renderProperties(){
+        const elem = document.getElementById('properties');
+        setProperties(elem.value);
+        console.log(elem.value);
+    }
+
     function renderBaseURI(){
         const elem = document.getElementById('baseURI');
         set_BaseURI(elem.value)
@@ -137,6 +146,36 @@ var Creator = ({accounts}) => {
             );
             const amount = document.getElementById('amount').value;
             const refAddress = document.getElementById('refAddress').value;
+            const nftProperties = document.getElementById('nftProperties').value;
+            const nftPropertiesArr = nftProperties.split(', ');
+            let collectionProperties;
+            const fileSelector = document.getElementById('file-selector');
+            var nftImage = document.getElementById("nftImage");
+
+            // Take action when the image has loaded
+            nftImage.addEventListener("load", function () {
+                var imgCanvas = document.createElement("canvas"),
+                    imgContext = imgCanvas.getContext("2d");
+
+                // Make sure canvas is as big as the picture
+                imgCanvas.width = nftImage.width;
+                imgCanvas.height = nftImage.height;
+
+                // Draw image into canvas element
+                imgContext.drawImage(nftImage, 0, 0, nftImage.width, nftImage.height);
+
+                // Get canvas contents as a data URL
+                var imgAsDataURL = imgCanvas.toDataURL("image/png");
+
+                // Save image into localStorage
+                try {
+                    localStorage.setItem("nftImage", imgAsDataURL);
+                }
+                catch (e) {
+                    console.log("Storage failed: " + e);
+                }
+            }, false); 
+
             try {
                 let response = await contract1.getCollection(name1);
                 console.log(response);
@@ -146,8 +185,13 @@ var Creator = ({accounts}) => {
                     signer
                     );
                 try {
+                    collectionProperties = await contract2.getProperties();
+                    if (collectionProperties.length !== nftPropertiesArr.length){
+                        throw "Wrong number of NFT properties";
+                    }
                     let response = await contract2.mintNFT(amount, refAddress);
                     console.log(response);
+                    createMetadata(collectionProperties, nftPropertiesArr, name1);
                 } catch (err) {
                     console.log("error: ", err);
                 }
@@ -172,6 +216,8 @@ var Creator = ({accounts}) => {
                 onChange={renderShortName}/>
                 <Input width='auto' placeholder='Max NFT supply' id="maxSupply" text="maxSupply" type="number"
                 onChange={renderMaxSupply}/>
+                <Input width='auto' placeholder='Collection properties' id="properties" text="properties" type="string"
+                onChange={renderProperties}/>
                 <Button onClick={createCollection}>
                     Create Collection
                 </Button>
@@ -187,6 +233,8 @@ var Creator = ({accounts}) => {
             <Stack spacing={2} align='stretch'>
                 <Input width='auto' placeholder='Amount to mint' id="amount" text="Amount to mint" type="number"/>
                 <Input width='auto' placeholder='Referal address' id="refAddress" text="refAddress" type="address"/>
+                <Input width='auto' placeholder='NFT properties' id="nftProperties" text="nftProperties" type="string"/>
+                <Input width="auto" placeholder='Choose file' id='nftImage' text='nftImage' type='file'/>
                 <Button onClick={mintNFT}>
                     MINT NFT
                 </Button>

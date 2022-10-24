@@ -42,5 +42,10 @@
     "@emotion/styled": "^11.10.4",
     "ethers": "^5.7.0",
     "framer-motion": "^7.3.5"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

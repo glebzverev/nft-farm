@@ -3,7 +3,7 @@ import NFTCollectionABI from '../abi/NFTCollectionABI.json'
 import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
-const FactoryAddress = "0x219569e857A2728aDede8E4154a977A9B800e8bF";
+const FactoryAddress = "0x6ff30A900651ED1670becA4f6F2A0bFA8AD2094D";
 const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
 export async function collectionExist(name){
     if (window.ethereum) {

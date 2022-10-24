@@ -1,4 +1,5 @@
 pragma solidity ^0.7.5;
+pragma abicoder v2;
 
 import "./NFTCollection.sol";
 
@@ -64,10 +65,10 @@ contract Factory {
         Collection_creator[name] = address(0); 
     } 
 
-    function makeCollection(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart) 
+    function makeCollection(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart, string[] memory properties) 
         external onlyWhitelist{
         require(Collection[name] == address(0), "Collection with that name already exist");
-        NFTCollection collection = new NFTCollection(name, symbol, maxNftSupply, saleStart);
+        NFTCollection collection = new NFTCollection(name, symbol, maxNftSupply, saleStart, properties);
         Collection_creator[name] = msg.sender;
         Collection[name] = address(collection);
         NFTCollection(address(collection)).flipSaleState();

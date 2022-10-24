@@ -1896,7 +1896,7 @@ abstract contract Ownable is Context {
 
 
 pragma solidity ^0.7.0;
-
+pragma abicoder v2;
 
 /**
  * @title NFTCollection contract
@@ -1921,9 +1921,15 @@ contract NFTCollection is ERC721, Ownable {
 
     uint256 public REVEAL_TIMESTAMP;
 
+    string[] public properties;
+
     mapping (uint256 => address) public referals;
 
-    constructor(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart) ERC721(name, symbol) {
+    // event LogProperties(string[] nftProperties);
+
+    constructor(string memory name, string memory symbol, uint256 maxNftSupply, uint256 saleStart, string[] memory _properties) ERC721(name, symbol) {
+        require(_properties.length <= 5, "Wrong number of propirties");
+        properties = _properties;
         MAX_NFTS = maxNftSupply;
         REVEAL_TIMESTAMP = saleStart + (86400 * 9);
     }
@@ -1972,11 +1978,18 @@ contract NFTCollection is ERC721, Ownable {
     /**
     * Mints NFTs
     */
-    function mintNFT(uint numberOfTokens, address ref) public payable {
+    function mintNFT(
+        uint numberOfTokens, 
+        address ref
+        ) 
+        public 
+        payable 
+        {
         require(saleIsActive, "Sale must be active to mint NFT");
         // require(numberOfTokens <= maxNFTPurchase, "Can only mint 1 token at a time");
         require(totalSupply().add(numberOfTokens) <= MAX_NFTS, "Purchase would exceed max supply of NFTs");
         require(nftPrice.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
+        // require(nftProperties.length == properties.length, "Worng number of NFT properties");
         
 
         for(uint i = 0; i < numberOfTokens; i++) {
@@ -1991,7 +2004,7 @@ contract NFTCollection is ERC721, Ownable {
         // the end of pre-sale, set the starting index block
         if (startingIndexBlock == 0 && (totalSupply() == MAX_NFTS || block.timestamp >= REVEAL_TIMESTAMP)) {
             startingIndexBlock = block.number;
-        } 
+        }
     }
 
     /**
@@ -2030,5 +2043,9 @@ contract NFTCollection is ERC721, Ownable {
 
     function updateMaxSupply(uint256 newMaxSupply) public onlyOwner {
         MAX_NFTS = newMaxSupply;
+    }
+
+    function getProperties() public view returns(string[] memory){
+        return(properties);
     }
 }
