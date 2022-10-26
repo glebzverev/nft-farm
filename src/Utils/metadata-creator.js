@@ -1,4 +1,4 @@
-const { fs } = require('fs');
+// const { fs } = require('fs');
 
 
 export async function createMetadata(collectionProperties, nftPropertiesArr, name1){

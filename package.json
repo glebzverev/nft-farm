@@ -3,20 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@chakra-ui/react": "^2.2.4",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@metamask/detect-provider": "^1.2.0",
+    "@openzeppelin/contracts": "^4.7.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.1.3",
+    "browser": "^0.2.6",
+    "express": "^4.18.2",
+    "framer-motion": "^6.5.1",
     "gh-pages": "^4.0.0",
+    "net": "^1.0.2",
+    "pg": "^8.8.0",
+    "postgres": "^3.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "web3-eth-abi": "^1.8.0",
+    "webpack": "^5.74.0"
+  },
+  "resolve": {
+    "fallback": {
+      "stream": false
+    }
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -37,15 +56,43 @@
     ]
   },
   "devDependencies": {
-    "@chakra-ui/react": "^2.3.2",
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "ethers": "^5.7.0",
-    "framer-motion": "^7.3.5"
-  },
-  "browser": {
-    "fs": false,
-    "path": false,
-    "os": false
+    "@chainlink/contracts": "^0.4.2",
+    "@ethersproject/providers": "^5.6.8",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^1.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@typechain/ethers-v5": "^10.1.0",
+    "@typechain/hardhat": "^6.1.2",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^9.1.0",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "chai": "^4.2.0",
+    "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.0.1",
+    "ethereum-checksum-address": "^0.0.8",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.10.1",
+    "hardhat-gas-reporter": "^1.0.8",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "^5.0.1",
+    "solidity-coverage": "^0.7.21",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.1.0",
+    "typescript": "^4.7.4",
+    "url": "^0.11.0",
+    "web-vitals": "^3.0.1",
+    "web3": "^1.7.5"
   }
 }

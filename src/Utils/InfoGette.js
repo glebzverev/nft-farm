@@ -3,7 +3,7 @@ import NFTCollectionABI from '../abi/NFTCollectionABI.json'
 import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
-const FactoryAddress = "0x6ff30A900651ED1670becA4f6F2A0bFA8AD2094D";
+const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
 const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
 export async function collectionExist(name){
     if (window.ethereum) {
@@ -36,11 +36,21 @@ export async function collectionInfo(CollectionAddr){
         try {
             let signAddr = await signer.getAddress(); 
             let balanceOf = await contract.balanceOf(signAddr);
-            let maxNftSupply = await contract.maxNftSupply;
+            // let maxNftSupply = await contract.maxNftSupply();
             let totalSupply = await contract.totalSupply();
             let baseURI = await contract.baseURI();
+            let properties = await contract.getProperties();
             // console.log(balanceOf, maxNftSupply, totalSupply);
-            return [balanceOf.toString(), maxNftSupply, totalSupply.toString(), baseURI];
+            console.log(properties);
+            var props = "[" ;
+            for (var i in properties){
+                props += properties[i];
+                if (i != properties.length-1)
+                    props += ",";
+            }
+            props += "]";
+            console.log(props);
+            return [balanceOf.toString(), totalSupply.toString(), baseURI, props];
         } catch (err) {
             console.log("error: ", err);
         }

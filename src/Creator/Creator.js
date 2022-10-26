@@ -2,16 +2,20 @@ import React from 'react';
 import { Button, Stack, Input } from '@chakra-ui/react';
 import { useState } from "react";
 import { ethers, BigNumber } from "ethers";
-
-
+import axios from "axios";
+// import { RestCreateCollection, RestCreateNFT } from './../Rest/creator';
+// import {createCollection, createNFT} from "../Rest/create-items";
 import {collectionExist, collectionInfo, getImg} from "../Utils/InfoGette";
 import { createMetadata } from '../Utils/metadata-creator';
-
 import './Creator.css';
-
 import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
+// import { createFunctionTypeNode } from 'typescript';
+
 const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
+const host = "http://legendsdao.art:4000";
+// const ip_host = 
+// const host = "http://localhost:4000";
 
 var Creator = ({accounts}) => {
     const isConnected = Boolean(accounts[0]);
@@ -21,6 +25,36 @@ var Creator = ({accounts}) => {
     const [properties, setProperties] = useState('Input Properties');
     const [Info, setInfo] = useState("");
     const [baseURI, set_BaseURI] = useState('Input base URI');
+    const [file, setFile] = useState('');
+
+    async function RestCreateNFT(name, props, values, num){
+        // var query = `${host}/create-nft/${name}/id,${props}/${num},${values}`;
+        var query = `${host}/create-nft/${name}/id,${props}/${num},${values}`;
+        console.log(query)
+        const response = 
+        axios.get(query)
+        .then((res,err) => {
+            if (err){
+                throw(err);
+            } 
+            console.log(res.statusText)// then print response status
+        });
+    }
+    
+    async function RestCreateCollection(name, props){
+        // var query = `${host}/create-collection/${name}/${props}`;
+        var query = `${host}/create-collection/${name}/${props},url`;
+        console.log(query)
+        const response = 
+        axios.get(query)
+        .then((res,err) => {
+            if (err){
+                throw(err);
+            } 
+            console.log(res.statusText)// then print response status
+        });
+        console.log(response.data);
+    }
 
     async function createCollection(){
         if (window.ethereum) {
@@ -32,9 +66,10 @@ var Creator = ({accounts}) => {
             FactoryABI,
             signer
             );
-            let propertiesArr = properties.split(', ');
+            let propertiesArr = properties.replaceAll(' ', '').split(',');
             console.log(name1, shortName, propertiesArr);
             try {
+                RestCreateCollection(name1, properties.replaceAll(' ', ''));
                 let response = await contract.makeCollection(
                     name1, shortName,
                     maxSupply, 0, propertiesArr);
@@ -66,17 +101,21 @@ var Creator = ({accounts}) => {
         }    
     }
 
+
     async function renderName(){
         var elem = document.getElementById('name1');
         setName1(elem.value);
         let collectionAddr = await collectionExist(elem.value);
+        console.log(collectionAddr);
         if (collectionAddr != "0x0000000000000000000000000000000000000000"){
             let data = await collectionInfo(collectionAddr);
+            console.log(data[0]);
             setInfo(
                 <div>
-                <p>Exist</p>
-                <p> TotalSupply: {data[2]}  ||   balanceOf: {data[0]} </p>
-                <p> baseURI: {data[3]} </p>
+                <p> Exist </p>
+                <p> TotalSupply: {data[1]}  ||   balanceOf: {data[0]} </p>
+                <p> baseURI: {data[2]} </p>
+                <p> properties: {data[3]}</p>
                 </div>
             );
             if (data[0] > 0){
@@ -134,6 +173,30 @@ var Creator = ({accounts}) => {
         }    
     }
 
+    function sendImage (name, id) {
+        if (!file){
+            alert('download image');
+            throw("need to download file");
+        }
+        else {
+            try{
+                const data = new FormData()
+                data.append("file", file);
+                axios.post(`${host}/img/${name}/${id}`, data 
+                )
+                .then((res,err) => {
+                    if (err){
+                        throw(err);
+                    } 
+                    console.log(res.statusText)// then print response status
+                })
+            } catch (error){
+                console.log("something went wrong");
+                throw(error);
+            }
+        }; 
+    }
+
     async function mintNFT(){
         if (window.ethereum) {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -149,33 +212,11 @@ var Creator = ({accounts}) => {
             const nftProperties = document.getElementById('nftProperties').value;
             const nftPropertiesArr = nftProperties.split(', ');
             let collectionProperties;
-            const fileSelector = document.getElementById('file-selector');
-            var nftImage = document.getElementById("nftImage");
+            // fileUploadHandler();
 
-            // Take action when the image has loaded
-            nftImage.addEventListener("load", function () {
-                var imgCanvas = document.createElement("canvas"),
-                    imgContext = imgCanvas.getContext("2d");
-
-                // Make sure canvas is as big as the picture
-                imgCanvas.width = nftImage.width;
-                imgCanvas.height = nftImage.height;
-
-                // Draw image into canvas element
-                imgContext.drawImage(nftImage, 0, 0, nftImage.width, nftImage.height);
-
-                // Get canvas contents as a data URL
-                var imgAsDataURL = imgCanvas.toDataURL("image/png");
-
-                // Save image into localStorage
-                try {
-                    localStorage.setItem("nftImage", imgAsDataURL);
-                }
-                catch (e) {
-                    console.log("Storage failed: " + e);
-                }
-            }, false); 
-
+            
+            // const fileSelector = document.getElementById('file-selector');
+            // var nftImage = document.getElementById("nftImage");
             try {
                 let response = await contract1.getCollection(name1);
                 console.log(response);
@@ -189,9 +230,25 @@ var Creator = ({accounts}) => {
                     if (collectionProperties.length !== nftPropertiesArr.length){
                         throw "Wrong number of NFT properties";
                     }
-                    let response = await contract2.mintNFT(amount, refAddress);
-                    console.log(response);
-                    createMetadata(collectionProperties, nftPropertiesArr, name1);
+
+                    let supply = await contract2.totalSupply();
+                    // console.log((supply+1).toString());
+                    const query = "'"+nftProperties.replaceAll(' ', '').replaceAll(',', "','")+"'"; 
+                    var query_props = "";
+                    for (var i = 0; i < collectionProperties.length; i++){
+                        query_props+=collectionProperties[i];
+                        if (i != collectionProperties.length -1)
+                            query_props+=',';
+                    }
+                    console.log("METADATA: ", query_props,
+                        query,
+                        name1);
+                    sendImage(name1, supply);
+
+                    RestCreateNFT(name1, query_props, query, supply);
+                    let resp = await contract2.mintNFT(amount, refAddress);
+
+                    console.log(resp);
                 } catch (err) {
                     console.log("error: ", err);
                 }
@@ -199,6 +256,12 @@ var Creator = ({accounts}) => {
                 console.log("error: ", err);
             }  
         }
+    }
+
+    function onChangeHandler(e){
+        console.log(e.target.files[0])
+        console.log(e.target.files[0].toString('base64'));
+        setFile(e.target.files[0]);
     }
 
     return(
@@ -234,17 +297,17 @@ var Creator = ({accounts}) => {
                 <Input width='auto' placeholder='Amount to mint' id="amount" text="Amount to mint" type="number"/>
                 <Input width='auto' placeholder='Referal address' id="refAddress" text="refAddress" type="address"/>
                 <Input width='auto' placeholder='NFT properties' id="nftProperties" text="nftProperties" type="string"/>
-                <Input width="auto" placeholder='Choose file' id='nftImage' text='nftImage' type='file'/>
+                <Input onChange = {onChangeHandler} width="auto" placeholder='Choose file' id='nftImage' text='nftImage' type='file' name='file' />
                 <Button onClick={mintNFT}>
                     MINT NFT
                 </Button>
             </Stack>
-            <p>Dangerous zone!!!</p>
+            {/* <p>Dangerous zone!!!</p>
             <Stack spacing={2} align='stretch'>
                 <Button onClick={destroyCollection}>
                     DESTROY COLLECTION
                 </Button>
-            </Stack>
+            </Stack> */}
             </div>
         </div>
     )
