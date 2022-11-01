@@ -29,7 +29,7 @@ async function Split(){
 
 function Valve() {
     const [amountIn, setAmountIn] = useState('');
-    const [address, setAddress] = useState('0x222482c6ac8d42d2cdcc75e94cdc2fd9820ef512');
+    const [address, setAddress] = useState('0x76eB624d7C6f682A052D5acdAF899d61E042CA33');
     const [tokenAddress, setTokenAddress] = useState('');
  
 

@@ -4,7 +4,7 @@ import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
 const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
-const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
+const ValveAddress = "0x76eB624d7C6f682A052D5acdAF899d61E042CA33";
 export async function collectionExist(name){
     if (window.ethereum) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
