@@ -174,25 +174,29 @@ var Creator = ({accounts}) => {
     }
 
     function sendImage (name, id) {
+        const amount = document.getElementById('amount').value;
+        
         if (!file){
             alert('download image');
             throw("need to download file");
         }
         else {
-            try{
-                const data = new FormData()
-                data.append("file", file);
-                axios.post(`${host}/img/${name}/${id}`, data 
-                )
-                .then((res,err) => {
-                    if (err){
-                        throw(err);
-                    } 
-                    console.log(res.statusText)// then print response status
-                })
-            } catch (error){
-                console.log("something went wrong");
-                throw(error);
+            for (var i = 0; i < amount; i++){
+                try{
+                    const data = new FormData()
+                    data.append("file", file);
+                    axios.post(`${host}/img/${name}/${Math.round(id) + i}`, data 
+                    )
+                    .then((res,err) => {
+                        if (err){
+                            throw(err);
+                        } 
+                        console.log(res.statusText)// then print response status
+                    })
+                } catch (error){
+                    console.log("something went wrong");
+                    throw(error);
+                }    
             }
         }; 
     }
@@ -210,13 +214,8 @@ var Creator = ({accounts}) => {
             const amount = document.getElementById('amount').value;
             const refAddress = document.getElementById('refAddress').value;
             const nftProperties = document.getElementById('nftProperties').value;
-            const nftPropertiesArr = nftProperties.split(', ');
+            const nftPropertiesArr = nftProperties.replaceAll(' ','').split(',');
             let collectionProperties;
-            // fileUploadHandler();
-
-            
-            // const fileSelector = document.getElementById('file-selector');
-            // var nftImage = document.getElementById("nftImage");
             try {
                 let response = await contract1.getCollection(name1);
                 console.log(response);
@@ -240,15 +239,19 @@ var Creator = ({accounts}) => {
                         if (i != collectionProperties.length -1)
                             query_props+=',';
                     }
+
                     console.log("METADATA: ", query_props,
                         query,
                         name1);
                     sendImage(name1, supply);
-
-                    RestCreateNFT(name1, query_props, query, supply);
-                    let resp = await contract2.mintNFT(amount, refAddress);
+                    let resp = await contract2.mintNFT(amount, refAddress);    
 
                     console.log(resp);
+                    for (var i = 0; i < amount; i++){
+                        await RestCreateNFT(name1, query_props, query, Math.round(supply) + i);
+                    }
+
+
                 } catch (err) {
                     console.log("error: ", err);
                 }
@@ -302,12 +305,6 @@ var Creator = ({accounts}) => {
                     MINT NFT
                 </Button>
             </Stack>
-            {/* <p>Dangerous zone!!!</p>
-            <Stack spacing={2} align='stretch'>
-                <Button onClick={destroyCollection}>
-                    DESTROY COLLECTION
-                </Button>
-            </Stack> */}
             </div>
         </div>
     )
