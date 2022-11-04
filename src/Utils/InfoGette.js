@@ -3,7 +3,7 @@ import NFTCollectionABI from '../abi/NFTCollectionABI.json'
 import ValveABI from '../abi/ValveABI.json'
 
 import { ethers, BigNumber } from "ethers";
-const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
+const FactoryAddress = "0x6cc72EB326a697f85bB46d4Ad3c6873e98E8d7C8";
 const ValveAddress = "0x222482C6aC8D42D2cDcC75e94CdC2fd9820eF512";
 export async function collectionExist(name){
     if (window.ethereum) {
@@ -92,8 +92,8 @@ export async function getCollectionOwners(collectionAddr, indexes){
         );  
         try {
             var totalPercentPerAddress = {};
-            var ownerPercent = 0.96;
-            var refPercent = 0.04;
+            let refPercent = await contract.referalFee() / contract.feeDecimals();
+            var ownerPercent = 1 - refPercent;
             
             for (var i of indexes) {
                 let owner = await contract.ownerOf(i);

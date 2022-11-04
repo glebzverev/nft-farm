@@ -82,6 +82,11 @@
 				"internalType": "string[]",
 				"name": "properties",
 				"type": "string[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "referalFee",
+				"type": "uint256"
 			}
 		],
 		"name": "makeCollection",

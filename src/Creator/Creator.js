@@ -12,7 +12,7 @@ import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
 // import { createFunctionTypeNode } from 'typescript';
 
-const FactoryAddress = "0x325f0cBFF5A813D99504628A0134B5185181fCBd";
+const FactoryAddress = "0x6cc72EB326a697f85bB46d4Ad3c6873e98E8d7C8";
 const host = "http://legendsdao.art:4000";
 // const ip_host = 
 // const host = "http://localhost:4000";
@@ -24,6 +24,7 @@ var Creator = ({accounts}) => {
     const [maxSupply, setMaxSupply] = useState('Input Short Name');
     const [properties, setProperties] = useState('Input Properties');
     const [Info, setInfo] = useState("");
+    const [referalFee, setReferalFee] = useState(4);
     const [baseURI, set_BaseURI] = useState('Input base URI');
     const [file, setFile] = useState('');
 
@@ -72,7 +73,7 @@ var Creator = ({accounts}) => {
                 RestCreateCollection(name1, properties.replaceAll(' ', ''));
                 let response = await contract.makeCollection(
                     name1, shortName,
-                    maxSupply, 0, propertiesArr);
+                    maxSupply, 0, propertiesArr, referalFee);
                 console.log(response);
             } catch (err) {
                 console.log("error: ", err);
@@ -145,6 +146,12 @@ var Creator = ({accounts}) => {
     function renderProperties(){
         const elem = document.getElementById('properties');
         setProperties(elem.value);
+        console.log(elem.value);
+    }
+
+    function renderFee(){
+        const elem = document.getElementById('Referal_fee');
+        setReferalFee(elem.value);
         console.log(elem.value);
     }
 
@@ -284,6 +291,9 @@ var Creator = ({accounts}) => {
                 onChange={renderMaxSupply}/>
                 <Input width='auto' placeholder='Collection properties' id="properties" text="properties" type="string"
                 onChange={renderProperties}/>
+                <Input width='auto' placeholder='Referal Fee %' id="Referal_Fee" text="Referal_Fee" type="number"
+                onChange={renderFee}/>
+
                 <Button onClick={createCollection}>
                     Create Collection
                 </Button>
