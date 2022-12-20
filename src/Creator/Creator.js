@@ -115,8 +115,8 @@ var Creator = ({accounts}) => {
                 <div>
                 <p> Exist </p>
                 <p> TotalSupply: {data[1]}  ||   balanceOf: {data[0]} </p>
-                <p> baseURI: {data[2]} </p>
-                <p> properties: {data[3]}</p>
+                <p> baseURI: {"..."} </p>
+                <p> properties: {data[2]}</p>
                 </div>
             );
             if (data[0] > 0){

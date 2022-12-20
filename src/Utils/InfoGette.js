@@ -38,7 +38,7 @@ export async function collectionInfo(CollectionAddr){
             let balanceOf = await contract.balanceOf(signAddr);
             // let maxNftSupply = await contract.maxNftSupply();
             let totalSupply = await contract.totalSupply();
-            let baseURI = await contract.baseURI();
+            //let baseURI = await contract.baseURI();
             let properties = await contract.getProperties();
             // console.log(balanceOf, maxNftSupply, totalSupply);
             console.log(properties);
@@ -50,8 +50,10 @@ export async function collectionInfo(CollectionAddr){
             }
             props += "]";
             console.log(props);
-            return [balanceOf.toString(), totalSupply.toString(), baseURI, props];
-        } catch (err) {
+            //return [balanceOf.toString(), totalSupply.toString(), baseURI, props];
+       	    return [balanceOf.toString(), totalSupply.toString(), props];
+	}
+	catch (err) {
             console.log("error: ", err);
         }
     }  
