@@ -12,7 +12,7 @@ import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
 // import { createFunctionTypeNode } from 'typescript';
 
-const FactoryAddress = "0xc997070AC85Ccd6C2EBea759f2F90C1589286cDb";
+const FactoryAddress = "0x502F67e1F44d703eA4FA5c9219B8EAA293d19fd4";
 const host = "http://legendsdao.art:4000";
 // const ip_host = 
 // const host = "http://localhost:4000";
@@ -94,7 +94,7 @@ var Creator = ({accounts}) => {
             console.log(signer);
 
             try {
-                let response = await contract.baseURI(name1, baseURI);
+                let response = await contract.setCollectionBaseURI(name1, baseURI);
                 console.log(response);
             } catch (err) {
                 console.log("error: ", err);
