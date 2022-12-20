@@ -12,7 +12,7 @@ import FactoryABI from './../abi/FactoryABI.json'
 import NFTCollectionABI from './../abi/NFTCollectionABI.json'
 // import { createFunctionTypeNode } from 'typescript';
 
-const FactoryAddress = "0x6cc72EB326a697f85bB46d4Ad3c6873e98E8d7C8";
+const FactoryAddress = "0xc997070AC85Ccd6C2EBea759f2F90C1589286cDb";
 const host = "http://legendsdao.art:4000";
 // const ip_host = 
 // const host = "http://localhost:4000";
