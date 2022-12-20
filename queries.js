@@ -3,7 +3,7 @@ const pool = new Pool({
   user: 'postgres',
   host: '80.78.244.110',
   database: 'collections',
-  password: 'password',
+  password: 'shegol',
   port: 5432,
 });
 
@@ -21,7 +21,8 @@ const getCollection = (request, response) => {
 };
 
 const getNFT = (request, response) => {
-  const id = parseInt(request.params.id);
+  console.log("GET NFT")
+	const id = parseInt(request.params.id);
   const name = request.params.name;
   pool.query(`SELECT * FROM ${name} WHERE id = ${id}`, (error, results) => {
     if (error) {
